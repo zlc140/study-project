@@ -1,0 +1,148 @@
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>proxyVue</title>
+    <style>
+        #app {
+            margin: 100px auto 0 auto;
+            width: 300px;
+        }
+        #btn {
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="num" />
+    <input id="btn" type="button" value="添加到Todolist" v-click="addList" /><br/>
+    <span>您输入的是：</span><span v-bind="num"></span>
+    <ul id="list" v-for="item in arr">
+    </ul>
+</div>
+</body>
+
+<script>
+class proxyVue {
+	constructor(options) {
+		this.$options = options || {};
+		this.$methods = this._methods = this.$options.methods;
+		const data = (this._data = this.$options.data)
+        this.subscribe = {}; //监察者列表
+		this.observe(data);//data观察者
+        this.compile(options.el);//数据编译
+        console.log(this.subscribe)
+    }
+    publish(watcher) {
+        if(!this.subscribe[watcher.property]) this.subscribe[watcher.property] = [];
+        	this.subscribe[watcher.property].push(watcher);
+
+    }
+    observe(data) {
+		const that = this;
+		let handler = {
+			get(target, property){
+				return target[property];
+            },
+            set(target, property, value){
+				let res = Reflect.set(target,property, value);
+				that.subscribe[property].map(item => {
+					item.update()
+                })
+                return res;
+            }
+        }
+        this.$data = new Proxy(data, handler);//通过proxy代理劫持监听对象放回新对象
+    }
+    compile(el) {
+		const nodes = Array.prototype.slice.call(
+			document.querySelector(el).children//获取的多个对象不是真正的数组
+        )
+        let data = this.$data;
+		nodes.map(node => {
+			if(node.children.length > 0) this.compile('#' + node.getAttribute("id"))
+			if(node.hasAttribute("v-bind")) {
+				let property = node.getAttribute("v-bind");
+				this.publish(new Watcher(node, "innerHTML", data, property))
+            }
+            if(node.hasAttribute("v-model")) {
+				let property = node.getAttribute("v-model");
+				this.publish(new Watcher(node, "vlaue", data, property))
+                //v-model添加数据监听更新data
+                node.addEventListener("input", () => {
+                	data[property] = node.value
+                })
+            }
+            if(node.hasAttribute('v-click')) {
+				let methodsName = node.getAttribute('v-click');
+				let method = this.$methods[methodsName].bind(data);//bind将触发事件的对象指到data
+				node.addEventListener("click", method)
+            }
+			if(node.hasAttribute('v-for')) {
+				let property = node.getAttribute('v-for').split('in')[1].trim();
+				this.publish(new Watcher(node, "for", data, property))
+                if(data[property] && data[property].length > 0){
+	                Render.init(data[property])
+                }
+				// let method = this.$methods[methodsName].bind(data);//bind将触发事件的对象指到data
+				// node.addEventListener("click", method)
+			}
+
+        })
+    }
+}
+class Watcher {
+	constructor(node, attr, data, property) {
+		this.node = node;
+		this.attr = attr;
+		this.data = data;
+		this.property = property;
+    }
+	update() {
+		this.node[this.attr] = this.data[this.property]
+    }
+
+}
+//渲染dom
+    const Render = {
+	    init: function (arr) {
+		    // 创建空白文档片段；因为文档片段存在于内存中，并不在DOM树中，所以将子元素插入到文档片段时不会引起页面回流（
+            // 对元素位置和几何上的计算）。因此，使用文档片段通常会带来更好的性能。
+            const fragment = document.createDocumentFragment();
+            for(let i=0; i < arr.length; i++) {
+            	const li = document.createElement('li');
+            	li.textContent = arr[i];
+            	fragment.appendChild(li);
+            }
+            list.appendChild(fragment)
+	    },
+        addList: function (val) {
+            const li = document.createElement('li');
+            li.textContent = val;
+            list.appendChild(li);
+        }
+    }
+//    实例化一个proxyVue
+    window.onload = function () {
+        let vm = new proxyVue({
+            el: '#app',
+            data: {
+            	num: 0,
+                arr: ['123']
+            },
+            methods: {
+	            addList(){
+	            	this.arr.push(this.num);
+		            Render.addList(this.num)
+                }
+
+            }
+        })
+    }
+</script>
+</html>

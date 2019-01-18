@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>腾讯发起 的 现代web组件化框架</title>
+</head>
+
+<body>
+<script src="https://unpkg.com/omi"></script>
+<script>
+	const { WeElement, h, render, define } = Omi
+
+
+	class LikeButton extends WeElement {
+		install() {
+			this.data = { liked: false }
+			console.log(this.data)
+		}
+		beforeUpdate(){
+			console.log('组件渲染前，首次不调用')
+        }
+		afterUpdate(){
+			console.log('组件渲染后,首次不调用')
+        }
+        onClick(){
+	        this.data.liked = true
+	        this.update()
+        }
+		render() {
+			if (this.data.liked) {
+				return 'You liked this.'
+			}
+
+			return h(
+				'button',
+				{
+					onClick: () => {
+						this.data.liked = true
+						this.update()
+					}
+				},
+				'Like'
+			)
+		}
+	}
+
+	define('like-button', LikeButton)
+
+	render(h('like-button'), 'body')
+</script>
+</body>
+
+</html>

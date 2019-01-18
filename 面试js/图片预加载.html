@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片懒加载，预加载</title>
+<!--
+懒加载： 图片设置dataset属性和默认src图片，在达到一定条件后修改src
+预加载： 把需要用到的图片在load之后加载出来，之后用到这种图片就不会再次请求接口 了
+-->
+<style>
+    body{
+        margin: 0;
+    }
+    img{
+        width: 100%;
+        height: 400px;
+    }
+</style>
+</head>
+<body>
+<button>载入图片</button>
+<img src="img/one.webp" data-original="img/1.jpg" alt="测试">
+<img src="img/one.webp" data-original="img/2.jpg" alt="测试">
+<img src="img/one.webp" data-original="img/3.jpg" alt="测试">
+<img src="img/one.webp" data-original="img/4.jpg" alt="测试">
+<script>
+	var oBtn = document.getElementsByTagName('button')[0];
+	var oImg0 = document.images[0];
+	/*懒加载*/
+	var aImages = document.images;
+	loadImg(aImages,2)
+	window.onload = function(){
+		preLoadImg(array);
+	}
+    window.onscroll = function () {
+    	loadImg(document.images,2)
+    }
+	function loadImg(arr, num) {
+		console.log(arr)
+        let maxNum = num;
+		for(var i=0,len = arr.length; i< len; i++) {
+			if(arr[i].getBoundingClientRect().top < document.documentElement.clientHeight && !arr[i].isload && maxNum > 0){
+				maxNum--
+                arr[i].isload = true;
+                arr[i].style.cssText = "transition: ''; opacity: 0;"
+                if(arr[i].dataset) {
+                    aftloadimg(arr[i], arr[i].dataset.original);
+                }else {
+                    aftloadimg(arr[i], arr[i].getAttribute('data-original'));
+                }
+
+                (function(i){
+                    setTimeout(function () {
+	                    arr[i].style.cssText = "transition: 1s; opacity: 1;"
+                    },500)
+                })(i)
+			}
+        }
+    }
+	function aftloadimg(obj, url){
+		var oImg = new Image();
+		oImg.onload = function () { //它会等oImg加载完成才会执行
+            obj.src = oImg.src;
+		}
+		oImg.src = url;
+
+    }
+	/*预加载*/
+	var array = ["img/1.jpg","img/2.jpg","img/3.jpg","img/4.jpg"]
+	var iNow = -1;
+	oBtn.onclick = function(){
+		iNow++;
+		iNow = iNow%4;
+		oImg0.src = array[iNow];
+	}
+	var aImages = [];
+	function preLoadImg(array){
+		for(var i = 0, len = preLoadImg.arguments[0].length; i < len; i++){
+			aImages[i] = new Image();
+			aImages[i].src = preLoadImg.arguments[0][i];
+		}
+	}
+
+</script>
+</body>
+</html>

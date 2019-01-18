@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.defingProperty(劫持)</title>
+    <style type="text/css">
+        nav ul{
+            display: flex;
+            flex-flow: row nowrap;
+        }
+        nav ul li{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <ul id="ul">
+        <li >
+            <a href="#/">黄呃呃啊</a>
+        </li>
+        <li>
+            <a href="#/red">红呃呃啊</a>
+        </li>
+        <li>
+            <a href="#/blue">蓝呃呃啊</a>
+        </li>
+    </ul>
+</nav>
+<div id="app">
+    <input type="text" v-model="someStr">
+    <input type="text" v-model="child.someStr">
+    <p v-class="className" class="abc">
+        {{someStr}}
+        <span v-text="child.someStr"></span>
+    </p>
+    <p>{{getHello}}</p>
+    <p v-html="htmlStr"></p>
+    <button v-on:click="clickBtn">change model</button>
+</div>
+</body>
+<script src="js/example/observe.js" type="text/javascript"></script>
+<script src="js/example/watcher.js" type="text/javascript"></script>
+<script src="js/example/compile.js" type="text/javascript"></script>
+<script src="js/example/mvvm.js" type="text/javascript"></script>
+<!--<script src="js/router/router-hash.js" type="text/javascript"></script>-->
+<script src="js/router/router-history.js" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+
+
+	 let demo = new Vue({
+         el: '#app',
+		 data: {
+			 someStr: '我擦嘞',
+             className: 'btn',
+             htmlStr: '<span style="color: red">你好啊</span>',
+             child: {
+			 	someStr: '123'
+             }
+		 },
+         computed:{
+         	getHello: function () {
+                return this.someStr + ',' + this.child.someStr
+            }
+         },
+         methods:{
+         	clickBtn: function (e) {
+	            var randomStrArr = ['childOne', 'childTwo', 'childThree'];
+	            this.child.someStr = randomStrArr[parseInt(Math.random() * 3)];
+            }
+         }
+	 }) 
+
+	// demo.$watch('child.someStr', function() {
+	// 	console.log('get',arguments);
+	// });
+
+
+</script>
+
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.defingProperty(劫持)</title>
+</head>
+<body>
+    <input type="text" name="infoInsert" id="infoInsert">
+    <input type="button" name="resetValue" id="resetValue" value="点我一下">
+    <p id="infoShow"></p>
+</body>
+<script type="text/javascript">
+    let obj = {
+    	seeYou : 'hello world!'
+    }
+    let btn = document.querySelector('#resetValue');
+    let infoInput = document.querySelector('#infoInsert');
+    let infoShow = document.querySelector('#infoShow');
+
+    Object.defineProperty(obj, 'forBind', {
+    	get: function () {
+    		console.log('get',this.seeYou)
+            return this.seeYou
+	    },
+        set: function (value) {
+            console.log(value,'set')
+	        infoInput.value = value;
+	        infoShow.innerText = value;
+        }
+    })
+
+    infoInput.value = obj.forBind;
+    infoShow.innerText = obj.forBind;
+
+    infoInput.addEventListener('input', function () {
+	    obj.forBind = this.value;
+    })
+    btn.addEventListener('click', function () {
+	    obj.forBind = 'resetValue';
+    })
+</script>
+
+</html>

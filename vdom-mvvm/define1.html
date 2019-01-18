@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Object.defingProperty(劫持)</title>
+</head>
+<body>
+<label for="infoInsert">请输入：</label>
+<input type="text" name="infoInsert" id="infoInsert" class="ad as">
+<!--<input type="button" name="resetValue" id="resetValue" value="点我一下">-->
+<p id="infoShow"></p>
+</body>
+<script src="js/define升级.js"></script>
+<script type="text/javascript">
+	// let btn = document.querySelector('#resetValue');
+	let infoInput = document.querySelector('#infoInsert');
+	let infoShow = document.querySelector('#infoShow');
+
+	 let demo = new Vue({
+		 data: {
+			 seeYou: '',
+             test: '23432',
+             visiable: {
+			 	isTrue: false
+             }
+		 }
+	 })
+    infoInput.addEventListener('input', function () {
+		demo.seeYou = this.value;
+    })
+    console.log(demo)
+    demo.$watch('seeYou', src=>infoShow.innerText=src);
+
+	// btn.addEventListener('click', function () {
+	// 	obj.forBind = 'resetValue';
+	// })
+</script>
+
+</html>

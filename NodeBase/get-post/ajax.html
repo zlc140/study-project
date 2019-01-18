@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-^-Compatible" content="ie=edge">
+    <title>node web</title>
+</head>
+<body>
+    <div id="app">
+        <h1>Todo list</h1>
+        <ul>
+            <li v-for="(item,index) in items" :key="index">{{item.name}}</li>
+        </ul>
+        <input type="text" v-model="item">
+        <button @click="postApi">添加</button>
+    </div>
+
+<!-- cdn 引用：Vue 和 Node -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        new Vue({
+            el: document.getElementById('app'),
+            data: function () {
+                return {
+                	items: [],
+                    item:'',
+
+                }
+            },
+            created() {
+                axios.get("http://localhost:3219/get").then(res => {
+            		if(!res) return;
+            		console.log(res)
+            		this.items = res.data
+                }).catch(err => {
+                	console.log(err)
+                })
+            },
+            methods: {
+	            postApi() {
+                    axios.post('http://localhost:3219/add', {name: this.item}).then(res => {
+                    	console.log('新增成功')
+                    	this.items = res.data;
+                    }).catch(err => {
+                    	console.log(err)
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+</html>

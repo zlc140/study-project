@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>proxy实现数据绑定(代理)</title>
+</head>
+<body>
+<ul id="list">
+</ul>
+<input type="button" name="resetValue" id="addList" value="点我一下">
+<p id="infoShow"></p>
+</body>
+<script type="text/javascript">
+    const list = document.getElementById('list');
+    const btn = document.getElementById('addList');
+    //渲染
+    const Render = {
+    	init: function(arr) {
+    		if(!arr)return;
+    		const fragment = document.createDocumentFragment();
+    		for(let i=0; i < arr.length; i++) {
+    			const li = document.createElement('li');
+    			li.textContent = arr[i];
+    			fragment.appendChild(li)
+            }
+            list.appendChild(fragment);
+        },
+        change: function(value) {
+	        const li = document.createElement('li');
+	        li.textContent = value;
+	        list.appendChild(li)
+        }
+    }
+    const arr = [1,2,3];
+    //数据监听
+    const newArr = new Proxy(arr, {
+    	get: function (target, key, receiver) {
+            console.log(key, receiver)
+            return Reflect.get(target, key, receiver)
+	    },
+        set: function (target, key, value, receiver) {
+	        console.log(key, receiver)
+            if(key != 'length'){
+            	Render.change(value)
+            }
+            return Reflect.set(target, key, value, receiver)
+        }
+    })
+
+    window.onload = function () {
+        Render.init(newArr)
+    }
+
+    btn.addEventListener('click', function(){
+	    newArr.push(arr.length+1)
+    })
+
+
+</script>
+
+</html>

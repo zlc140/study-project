@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="box" style="width: 100%; height: 2000px; background-color: #ddd;"> 
+    </div>
+    <script src="./防抖/节流.js"></script>
+    <script src="./js/数组全排列.js"></script>
+    <script type="text/javascript">
+        function cb(e){
+        	console.log('123')
+        }
+        function cb2(e){
+	        console.log(e.target.id)
+        }
+        let box = document.querySelector('#box')
+        //
+        let func = throttle(cb2, 1000)
+        box.addEventListener('click', function(e){
+	        func(e)
+        })
+
+        window.onscroll = debounce(cb, 500)
+
+
+        // 数据源
+        // const arr = [
+	     //    {
+		 //        id: 1,
+		 //        name: "a",
+		 //        parent: null
+	     //    },
+	     //    {
+		 //        id: 2,
+		 //        name: "b",
+		 //        parent: 1
+	     //    },
+	     //    {
+		 //        id: 3,
+		 //        name: "c",
+		 //        parent: 2
+	     //    },
+	     //    {
+		 //        id: 4,
+		 //        name: "d",
+		 //        parent: 1
+	     //    },
+	     //    {
+		 //        id: 5,
+		 //        name: "e",
+		 //        parent: 3
+	     //    },
+	     //    {
+		 //        id: 6,
+		 //        name: "f",
+		 //        parent: null
+	     //    },
+	     //    {
+		 //        id: 7,
+		 //        name: "g",
+		 //        parent: 1
+	     //    },
+	     //    {
+		 //        id: 8,
+		 //        name: "h",
+		 //        parent: 6
+	     //    }
+        // ]
+        //
+        // let a=0,b=0;
+        // function sortArr(arr, parentId) {
+	     //    let getArr = [];
+	     //    console.log(arr)
+	     //    arr && arr.length>0 && arr.forEach((v, index) => {
+	     //    	a++
+		 //        if((!parentId && !v.parent) || v.parent == parentId){
+			//         let prop = Object.assign({}, v);
+			//         let copyArr = [...arr];
+			//         copyArr.splice(index, 1)
+			//         prop.child = sortArr(copyArr, v.id);
+			//         getArr.push(prop);
+		 //        }
+	     //    })
+	     //    return getArr.length > 0 ? getArr : null
+        // }
+        // function sortArr2(arr, parentId) {
+	     //    let getArr = [];
+	     //    arr.forEach((v, index) => {
+		 //        b++
+		 //        if((!parentId && !v.parent) || v.parent == parentId){
+			//         let prop = Object.assign({}, v);
+			//         prop.child = sortArr2(arr, v.id);
+			//         getArr.push(prop);
+		 //        }
+	     //    })
+	     //    return getArr.length > 0 ? getArr : null
+        // }
+        // console.time('start');
+        // console.log(sortArr(arr, null))
+        // console.timeEnd('start')
+        // console.time('end');
+        // console.log(sortArr2(arr, null))
+        // console.timeEnd('end')
+        // console.log(a,b)
+    </script>
+</body>
+</html>

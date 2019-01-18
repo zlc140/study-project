@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>虚拟dom diff算法</title>
+    <style type="text/css">
+        html,body{
+            font-size: 14px;
+        }
+        .box{
+            width: 300px;
+            background-color: #ddd;
+        }
+        .box2{
+            width: 300px;
+            background-color: #f0f6f0;
+        }
+    </style>
+</head>
+<body>
+<pre>
+    浏览器渲染流程： 创建DOM树 -- 创建styleRules -- 创建Render树 --布局layout -- 绘制Painting
+
+Vdom是为了解决浏览器性能问题而被设计出来的
+    Vdom是dom的一层映射js数据，定义了dom节点的一些关键信息，vdom其实就是将真是节点转成
+js数据，将原本需要真是dom上进行的创建，删除，修改等dom操作放到vdom中进行，多次操作
+合并后一次性attch到dom树上，提升浏览器性能
+
+diff算法（） 该算法之所以复杂度只有O(n),是因为他对两棵树制作平级比较，不会跨层比较
+深度循环 对新旧两棵树每个节点添加标记 - 比较新旧节点 - 差异记录 - 更新dom
+
+比较：
+1.节点类型比较 - 如果不一样直接替换 REPLACE
+2.节点类型一致，属性或属性值变了 - 节点更新 PROPS
+3.文本变了 - 更行内容 TEXT
+4. 移动、增加、删除子节点 REORDER
+    a: 遍历子节点比较差异直接重复以上操作 - 效率较低
+    b: 增加key值，根据key直接找到具体位置进行操作常见的最小编辑距离问题，可以用Levenshtein Distance算法来实现，时间复杂度是O(M*N)
+
+映射成真实DOM
+我们会有两个虚拟DOM(js对象，new/old进行比较diff)，用户交互我们操作数据变化new虚拟DOM，old虚拟DO
+M会映射成实际DOM(js对象生成的DOM文档)通过DOM fragment操作给浏览器渲染。当修改new虚拟DOM，会把newDOM
+和oldDOM通过diff算法比较，得出diff结果数据表(用4种变换情况表示)。再把diff结果表通过DOM fragment更新到浏览器DOM中
+
+参考： https://www.jianshu.com/p/af0b398602bc
+</pre>
+    <div id="app"></div>
+    <button id="btn">点击</button>
+</body>
+<script src="js/build.js"></script>
+</html>

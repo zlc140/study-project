@@ -146,7 +146,7 @@ const compileUtil = {
 }
 
 const updater = {
-	textUpdater: function (node, value) {
+	textUpdater: function (node, value) { 
 		node.textContent = typeof value == 'undefined' ? '' : value
 	},
 	htmlUpdater: function (node, value) {
@@ -159,6 +159,7 @@ const updater = {
 		node.className = className + space + value;
 	},
 	modelUpdater: function (node, value, oldValue) {
+		console.log(value,'input')
 		node.value = typeof value == 'undefined' ? '' : value;
 	}
 }

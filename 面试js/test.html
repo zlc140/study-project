@@ -4,9 +4,40 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+    #box ul{
+        /*display: block;*/
+        /*width: 100%;*/
+        /*overflow: hidden;*/
+        display: flex;
+        flex-flow: column wrap;
+        height: 800px;
+    }
+    #box li{
+        box-sizing: border-box;
+        list-style: none;
+        margin: 10px 50px;
+        width: 200px;
+        float: left;
+        /*display: inline-block;*/
+        border: 1px solid;
+    }
+</style>
 <body>
     <input type="text" placeholder="你好" id="test" style="width:100%;height: 30px;">
-    <div id="box" style="width: 100%; height: 2000px; background-color: #ddd;"> 
+    <div id="box" style="width: 100%; height: 2000px; background-color: #ddd;">
+        <ul>
+            <li style="height: 200px;">1</li>
+            <li style="height: 300px;">2</li>
+            <li style="height: 200px;">3</li>
+            <li style="height: 200px;">5</li>
+            <li style="height: 300px;">6</li>
+            <li style="height: 300px;">7</li>
+            <li style="height: 200px;">3</li>
+            <li style="height: 200px;">5</li>
+            <li style="height: 200px;">6</li>
+            <li style="height: 200px;">7</li>
+        </ul>
     </div>
 
     <script src="./防抖/节流.js"></script>

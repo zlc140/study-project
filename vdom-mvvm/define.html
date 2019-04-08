@@ -19,13 +19,13 @@
 
     Object.defineProperty(obj, 'forBind', {
     	get: function () {
-    		console.log('get',this.seeYou)
+    		console.log('get',obj)
             return this.seeYou
 	    },
         set: function (value) {
-            console.log(value,'set')
 	        infoInput.value = value;
 	        infoShow.innerText = value;
+	        console.log(obj,this,'set')
         }
     })
 

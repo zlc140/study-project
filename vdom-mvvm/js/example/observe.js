@@ -6,6 +6,7 @@
 * @data 2019/1/3
 **/
 
+
 /* 订阅发布中心 - 消息管理中心 */
 let uid = 0;
 class Dep {
@@ -14,7 +15,7 @@ class Dep {
 		//区分新watcher和改变属性值后产生的watcher
 		this.id = uid++;
 		// 存储订阅者数组
-		
+
 		this.subs = [];
 	}
 	depend() {

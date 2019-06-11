@@ -11,10 +11,13 @@ Compile.prototype = {
 	node2Fragment: function (el) {
 		let fragment = document.createDocumentFragment(),child;
 		// 将原生节点拷贝到fragment
+		let i =1;
+		//如果插入的子节点是DOM树中已存在的节点的话，这个节点会被移动到要插入的位置而不会复制，
+		//所以这个的while循环相当于把el下的子节点全部移动到了fragment下
 		while (child = el.firstChild) {
 			fragment.appendChild(child)
 		}
-	 
+
 		return fragment;
 	},
 	init: function(){
@@ -25,7 +28,7 @@ Compile.prototype = {
 		[].slice.call(childNodes).forEach(function(node,index) {
 			let text = node.textContent;
 			let reg = /\{\{(.*)\}\}/;
-			
+
 			if(me.isElementNode(node)) {
 				me.compile(node);
 			}else if(me.isTextNode(node) && reg.test(text)){
@@ -36,7 +39,7 @@ Compile.prototype = {
 				me.compileElement(node)
 			}
 		})
-		
+
 	},
 	compile: function (node) {
 		let nodeAttrs = node.attributes,me=this;
@@ -75,14 +78,14 @@ const compileUtil = {
 	text: function(node, vm, exp) {
 		this.bind(node, vm, exp, 'text');
 	},
-	
+
 	html: function(node, vm, exp) {
 		this.bind(node, vm, exp, 'html');
 	},
-	
+
 	model: function(node, vm, exp) {
 		this.bind(node, vm, exp, 'model');
-		
+
 		var me = this,
 			val = this._getVMVal(vm, exp);
 		node.addEventListener('input', function(e) {
@@ -90,47 +93,47 @@ const compileUtil = {
 			if (val === newValue) {
 				return;
 			}
-			
+
 			me._setVMVal(vm, exp, newValue);
 			val = newValue;
 		});
 	},
-	
+
 	class: function(node, vm, exp) {
 		this.bind(node, vm, exp, 'class');
 	},
-	
+
 	bind: function(node, vm, exp, dir) {
 		var updaterFn = updater[dir + 'Updater'];
 		updaterFn && updaterFn(node, this._getVMVal(vm, exp));
-		
+
 		let dd = new Watcher(vm, exp, function(value, oldValue) {
 			updaterFn && updaterFn(node, value, oldValue);
 		});
 		console.log(dd)
 	},
-	
+
 	// 事件处理
 	eventHandler: function(node, vm, exp, dir) {
 		var eventType = dir.split(':')[1],
 			fn = vm.$options.methods && vm.$options.methods[exp];
-		
+
 		if (eventType && fn) {
 			node.addEventListener(eventType, fn.bind(vm), false);
 		}
 	},
-	
+
 	_getVMVal: function(vm, exp) {
 		var val = vm;
 		exp = exp.split('.');
-		
+
 		exp.forEach(function(k) {
 			val = val[k];
 		});
-		
+
 		return val;
 	},
-	
+
 	_setVMVal: function(vm, exp, value) {
 		var val = vm;
 		exp = exp.split('.');
@@ -146,7 +149,7 @@ const compileUtil = {
 }
 
 const updater = {
-	textUpdater: function (node, value) { 
+	textUpdater: function (node, value) {
 		node.textContent = typeof value == 'undefined' ? '' : value
 	},
 	htmlUpdater: function (node, value) {

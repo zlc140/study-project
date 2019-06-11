@@ -9,19 +9,19 @@ class Vue {
 		Object.keys(data).forEach(key => {
 			this._proxy(key)
 		})
-		
+
 		this._initComputed();
-		
+
 		observe(data)
-		
+
 		this.$compile = new Compile(options.el || document.body,this)
-		
+		console.log(this,'this')
 	}
 	$watch(expOrFn, cb) {
-		new Watcher(this, expOrFn, cb)
+		// new Watcher(this, expOrFn, cb)
 	}
 	_proxy(key) {
-		
+
 		Object.defineProperty(this, key, {
 			configurable: true,
 			enumerable: true,
@@ -45,5 +45,5 @@ class Vue {
 			})
 		}
 	}
-	
+
 }

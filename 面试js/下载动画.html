@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>下载文件的时候的动画效果</title>
+</head>
+<style>
+    .box{
+        width: 800px;
+        height: 50px;
+        position: relative;
+        margin-top: 20px;
+    }
+    .current-progress-bar {
+        width: px;
+        height: 10px;
+        background-color: darkturquoise;
+        position: absolute;
+        top: 0;
+        transition: all 250ms;
+    }
+    .progress-bar{
+        width: 100%;
+        height: 10px;
+        background-color: #f0f0f0;
+    }
+    .dog-box{
+        width: 20px;
+        height: 20px;
+        background-color: darkturquoise;
+        border-radius: 50%;
+        position: absolute;
+        top: -5px;
+    }
+</style>
+<body>
+    <button id="btn">开始下载</button>
+    <div class="box">
+        <div class="progress-bar"></div>
+        <div class="current-progress-bar"></div>
+        <div class="dog-box"></div>
+    </div>
+    <script type="text/javascript">
+        let btn = document.getElementById('btn')
+        let boxWidth = document.querySelector('.progress-bar').clientWidth;
+        let currentProgress = document.querySelector('.current-progress-bar')
+        let dogBox = document.querySelector('.dog-box')
+        console.log(Array.prototype.slice.call(dogBox))
+        const times = 250;
+        btn.addEventListener('click', function() {
+            console.log('click')
+            let xhr = new XMLHttpRequest()
+            const downloadUrl = './img/4.jpg'
+            xhr.open('GET', downloadUrl, true);
+            xhr.addEventListener('progress', throttle(moveDog));
+            xhr.responseType = 'blob';   //二进制文件
+            // xhr.onload = function(res) {
+            //     console.log('res',this.response)
+            //
+            //
+            // }
+            xhr.send();
+
+        })
+        function moveDog(event) {
+            //响应头要有Content-Length
+            if(event.lengthComputable) {
+                let percentComplete = event.loaded / event.total;
+                let left = boxWidth * percentComplete;
+                let lastTransform = window.getComputedStyle(dogBox).transform || `translateX(0)` //获取当前的位
+
+                dogBox.animate({
+                    transform: [lastTransform, `translateX(${left-10}px)`]
+                }, {
+                    easing: 'linear',
+                    fill: 'forwards',
+                    duration: times
+                })
+                currentProgress.style.width = `${left}px`
+                 && console.log('event.percentComplete',event.currentTarget.response)
+                if(percentComplete == 1){
+                    var img = document.createElement('img');
+                    img.src = window.URL.createObjectURL(event.currentTarget.response);
+                    img.onload = function() {
+                        //图片加载完，释放一个URL资源。
+                        window.URL.revokeObjectURL(this.src);
+                    }
+                    setTimeout(function(){
+                        document.body.appendChild(img)
+                    },times)
+
+                }
+            }
+        }
+        function throttle(func, delay = 250) {
+            let timer, timeout = null;
+            return function() {
+                let arg = arguments;
+                let me = this;
+                function resultfunc() {
+                    timer = new Date();
+                    timeout = false;
+                    func.apply(me, arg)
+                }
+                if(timeout) return;
+                if(timer - new Date < delay && !timeout) {
+                    timeout = setTimeout(resultfunc, delay)
+                    return;
+                }
+                resultfunc()
+            }
+
+        }
+
+
+    </script>
+
+</body>
+</html>

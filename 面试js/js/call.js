@@ -35,3 +35,15 @@ Function.prototype.selfCall = function(context, ...args) {
     delete context[caller]
     return res
 }
+
+// bind方法
+var a = {
+    user:"追梦子",
+    fn:function(e,d,f){
+        console.log(this.user); //追梦子
+        console.log(e,d,f); //10 1 2
+    }
+}
+var b = a.fn;
+var c = b.bind(a,10);
+c(1,2);

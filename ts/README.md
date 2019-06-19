@@ -73,3 +73,90 @@ this.page name is {{ nullHero?.name }}
 
 - !. 与安全导航操作符不同的是，非空断言操作符不会防止出现 null 或 undefined。
 let s = e!.name;  // 断言e是非空并访问name属性
+- ?: 可选参数
+```js
+function buildName(firstName: string, lastName?: string) {
+    return firstName + ' ' + lastName
+}
+
+// 错误演示
+buildName("firstName", "lastName", "lastName")
+// 正确演示
+buildName("firstName")
+// 正确演示
+buildName("firstName", "lastName")
+
+```
+
+### 泛型 Generics 主要是为了实现创建可复用的组件
+1. 泛型方法
+ ```js
+function gen_func1<T>(arg: T): T {
+    return arg;
+}
+// 或者
+let gen_func2: <T>(arg: T) => T = function (arg) {
+}
+// 调用
+gen_func1<string>('Hello world');
+gen_func2('Hello world'); 
+// 第二种调用方式可省略类型参数，因为编译器会根据传入参数来自动识别对应的类型。
+
+```
+
+
+### 访问修饰符： private/ public/ protected
+1. 默认是 public
+2. 当车成员被标记为private时。它就不能在声明它的类的外部使用
+
+```js
+class Animal {
+    private name: string;
+    constructor(theName: string) {
+        this.name = theName;
+    }
+}
+
+let a = new Animal('Cat').name; //错误，‘name’是私有的
+
+```
+3.  protected和private类似，但是，protected成员在派生类中可以访问
+
+```js
+class Animal {
+    protected name: string;
+    constructor(theName: string) {
+        this.name = theName;
+    }
+}
+
+class Rhino extends Animal {
+    constructor() {
+        super('Rhino');
+   }         
+   getName() {
+       console.log(this.name) //此处的name就是Animal类中的name
+   }
+} 
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

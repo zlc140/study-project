@@ -43,6 +43,16 @@ M会映射成实际DOM(js对象生成的DOM文档)通过DOM fragment操作给浏
 和oldDOM通过diff算法比较，得出diff结果数据表(用4种变换情况表示)。再把diff结果表通过DOM fragment更新到浏览器DOM中
 
 参考： https://www.jianshu.com/p/af0b398602bc
+
+    VUE中的virtual DOM的添加过程：
+        1. 组件首次渲染通过render()方法生成vnode,在此过程中对所有的动态数据添加watch,相当于依赖收集，并添加到Vue实例上vm._vnode，之后将vnode挂载到根节点上
+        2. 模板中使用了数据，则通过this.get()，往Dep的subs添加对应的Dep.target(对应的watcher)
+        3. 数据变化触发this.set,激活更新机制，循环对应的dep下的订阅队列
+        4. 订阅队列循环执行并之后生成新的vnode,
+        5. 通过_update()方法触发diff算法，比较vm._vnode和新的vnode
+        6. diff算法修改oldVnode 并更新真实DOM
+
+
 </pre>
     <div id="app"></div>
     <button id="btn">点击</button>

@@ -10,5 +10,11 @@ app.set('view engine', 'ejs')// 设置模板引擎为 ejs
 app.use('/',indexRouter)
 app.use('/user',userRouter)
 // app.use(userRouter)
+//JSONP请求
+app.get('/show',(req, res)=> {
+    console.log(req.query)
+    let {callback} = req.query
+    res.send(`${callback}('hello')`)
+})
 
 app.listen(3000,'127.0.0.1')

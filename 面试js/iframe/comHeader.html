@@ -1,0 +1,41 @@
+<!DOCTYPE>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>iframe</title>
+    </head>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html{
+            height: 60px;width: 100%;
+        }
+        .header-box{
+            width: 100%;
+            height: 60px;
+            background-color: #f0f0f0;
+            text-align: center;
+            line-height: 60px;
+        }
+    </style>
+    <body>
+        <div class="header-box">
+            <span onclick="getParent()">我是头部</span>
+        </div>
+        <script src="../../utils/cookie.js"></script>
+        <script>
+            // 测试同域名下cookie的获取与修改
+            window.onload = function(){
+                console.log(Cookies.get('message'))
+                Cookies.set('comHeader','我在这个header下', { path: '/study-project/'})
+            }
+            setTimeout(function () {
+            },1000)
+            function headerFunc(){
+                console.log('我是头部的，我是被主框架调用的')
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html,body,.container{
+            width: 100%;
+            height: 100%;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        input{
+            height: 26px;
+            width: 200px;
+            outline: none;
+        }
+        button{
+            height: 26px;
+            padding:0 5px;
+            line-height: 26px;
+        }
+        .main{
+            box-sizing: border-box;
+            padding: 30px;
+            flex-grow: 2;
+            width: 100%;
+        }
+        .form-item{
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <iframe
+            src="./iframe/comHeader.html" frameborder="0"
+            width="100%" height="60px"
+            id="iFrame"
+            longdesc="测试iframe传参">
+        <p>Your browser does not support iframes.</p>
+    </iframe>
+    <div class="main">
+<!--        <form action="http://localhost:3000/form_get" method="get" enctype="multipart/form-data">-->
+        <div class="form-item">
+            <input id="user" type="text" name="user" placeholder="请输入名称登录">
+            <button onclick="init()" >登录</button>
+        </div>
+        <div class="form-item">
+            <input id="message" type="text" name="message" placeholder="请输入您的信息">
+            <button onclick="formSublime()" >发送信息给后台</button>
+        </div>
+        <div class="form-item">
+            <button onclick="langout()" >退出登录</button>
+        </div>
+
+    </div>
+    <iframe
+            src="http://127.0.0.1:3000/views/comFooter.html" frameborder="0"
+            width="100%" height="100px"
+            id="iFrameFooter"
+            name="iFrameFooter"
+            longdesc="测试iframe传参">
+        <p>Your browser does not support iframes.</p>
+    </iframe>
+</div>
+</body>
+<script src="../utils/cookie.js"></script>
+<!--
+设置path之后只能是域名+该path下的页面才能访问
+expires设置为7天
+Cookies.set('name','value', { path: '', expires: 7 })
+Cookies.get('name')
+Cookies.remove('name', { path: '' })
+Cookies.get() //{name: value}
+-->
+<script type="text/javascript">
+    function init(){
+        let value= document.getElementById('user').value
+        request('http://localhost:3000/login?username='+value).then(res => {
+            console.log('sublime',  res)
+            alert(res.message)
+        })
+
+    }
+    function langout() {
+        request('http://localhost:3000/lagout').then(res => {
+            console.log('退出',  res)
+            alert(res.message)
+        })
+    }
+
+    let iFrame = document.getElementById('iFrame')
+    //头部加载完发送message
+    iFrame.onload = function() {
+        iFrame.contentWindow.headerFunc();
+        Cookies.set('message','我是主页面的cookie2')
+        console.log('设置path的comHeader的cookie是否可以获取',Cookies.get('comHeader'))
+    }
+    let newFrame;
+// ==================================footer是跨域的iframe(NodeExpress)================================
+    let iFrameFooter = document.getElementById('iFrameFooter')
+    iFrameFooter.onload = function () {
+        iFrameFooter.contentWindow.postMessage('我是你加载完成后的通知','*')
+        // iFrameFooter.contentWindow.frameFunc() //跨域这样调用会报错,需要通过以下方法调用
+        if(!newFrame){
+            newFrame = document.createElement('iframe')
+            newFrame.src = 'http://127.0.0.1:3000/views/exceFooter.html'
+            newFrame.style.display = 'none'
+            document.body.appendChild(newFrame)
+        }else{
+            newFrame.src = 'http://127.0.0.1:3000/views/exceFooter.html' + Math.random()
+        }
+    }
+    // ==================================主框架供子iframe调用的方法================================
+    function getParentMethod() {
+        console.log('我是你爸爸')
+    }
+    //ajax请求只会自动携带同源的cookie，不同原的不带
+    // 可以通过前端设置withCredentials为true， 后端设置Header的方式让ajax自动带上不同源的cookie，但是这个属性对同源请求没有任何影响。会被自动忽略
+    function formSublime() {
+        let value= document.getElementById('message').value
+        request('http://localhost:3000/form_get?message='+value).then(res => {
+            console.log('sublime',  res)
+            if(res.data) {
+                alert('请求成功：' + res.data.message)
+            }
+            else{
+                alert(res.message)
+            }
+        })
+        console.log(Cookies.get())
+
+    }
+
+    function request(url, method, data){
+        if(!url) return;
+        let type = method || 'GET'
+        let params = data || {}
+        return new Promise((resolve, reject) => {
+            var xhr = new XMLHttpRequest()
+            xhr.open(type, url)
+            xhr.withCredentials = true
+            xhr.onload = function(data){
+                // console.log(data)
+            }
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4 && xhr.status === 200) {
+                    let data = xhr.responseText
+                    resolve(JSON.parse(data))
+                }else{
+                    // reject('请求失败')
+                }
+            }
+            xhr.send()
+        })
+
+    }
+</script>
+</html>

@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 
 router.get('/:name', function (req, res ) {
+	console.log(req.cookies)
 	res.render('user',{
 		name: req.params.name
 	})

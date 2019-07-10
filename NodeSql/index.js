@@ -26,15 +26,15 @@ http.createServer((req,res) => {
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 	// 跨域允许的请求方式
 	res.setHeader('Content-Type', 'application/json');
-	
+
 	let pathName = req.url;
-	
+
 	if(req.method == 'POST') {
 		let pathName = req.url;
 		console.log('【post】接口为：'+ pathName);
 		//接受请求数据
 		let reqData = '';
-		//数据接入中
+		//数据接入中)
 		req.addListener('data', function(chunk) {
 			reqData += chunk;
 		})
@@ -44,7 +44,7 @@ http.createServer((req,res) => {
 			console.log("\n参数为："+ JSON.stringify(result))
 			// 注册
 			if(pathName == '/register'){
-				
+
 				let { username, password, mobile, age} = result;
 				let time = getNowFormatDate();//注册时间
 				if(!username) {
@@ -73,7 +73,7 @@ http.createServer((req,res) => {
 									repeatMobile = true;
 								}
 							}
-							
+
 							if(repeatName || repeatMobile) {
 								let text = '';
 								if(repeatName) text += '姓名';
@@ -83,7 +83,7 @@ http.createServer((req,res) => {
 							}else {
 								resolve();
 							}
-							
+
 						}
 					})
 				}).then( () => {//查重通过
@@ -104,7 +104,7 @@ http.createServer((req,res) => {
 						}
 					})
 				})
-				
+
 			}else if(pathName == '/login') {
 				let { username, password } = result;
 				if(!username) {
@@ -150,18 +150,18 @@ http.createServer((req,res) => {
 						}
 					}
 				})
-				
+
 			}
-			
+
 		})
-		
+
 	}else if(req.method == 'GET') {
 		let pathName = url.parse(req.url).pathname;
 		console.log('【get】接口为：'+ pathName);
 		if(pathName == '/getMessage') {
 			let params = url.parse(req.url, true).query;
 			let readSql = "SELECT * FROM message";
-			
+
 			connection.query(readSql, (err , resData) => {
 				if(err) {
 					throw err;
@@ -177,8 +177,8 @@ http.createServer((req,res) => {
 			})
 		}
 	}
-	
-	
+
+
 }).listen(3000)
 
 // 获取当前时间

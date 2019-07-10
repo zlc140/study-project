@@ -9,4 +9,16 @@
 <h1><%= name.toUpperCase() %></h1>
 <p>hello, <%= name %></p>
 </body>
+<script>
+// 验证同源下请求自动携带cookie
+    window.onload = function(){
+        var xhr = new XMLHttpRequest()
+        xhr.open('GET', 'http://localhost:3000/form_get?username=123')
+        xhr.withCredentials = true
+        xhr.onload = function(data){
+            console.log(data)
+        }
+        xhr.send()
+    }
+</script>
 </html>

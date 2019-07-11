@@ -21,17 +21,21 @@ var options = {
 
 //设置允许跨域
 var allCrossDomain = function(req, res, next) {
-
+    let reqOrigin = req.headers.origin;
+    let whiteOrigins = new Set(['http://localhost:63342'])
     //设置允许跨域的域名
-    res.header('Access-Control-Allow-Origin', 'http://localhost:63342')
+    //如果请求前端设置携带cookie,则不能设置为*，需要为域名白名单
+    res.header('Access-Control-Allow-Origin', whiteOrigins.has(reqOrigin) ? reqOrigin:'null') //http://localhost:63342
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Credentials','true');
 
     next();
 }
+//设置cookieParser的标识码
 app.use(cookieParser('123456'))
 app.use(allCrossDomain)
+// app.all('*',allCrossDomain)
 
 app.set('views', path.join(__dirname, 'views'))// 设置存放模板文件的目录 (这个目录不能设置为view,报错View is not constructor)
 app.set('view engine', 'ejs')// 设置模板引擎为 ejs

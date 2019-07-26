@@ -22,7 +22,7 @@ var options = {
 //设置允许跨域
 var allCrossDomain = function(req, res, next) {
     let reqOrigin = req.headers.origin;
-    let whiteOrigins = new Set(['http://localhost:63342'])
+    let whiteOrigins = new Set(['http://localhost:63342','http://localhost:8080'])
     //设置允许跨域的域名
     //如果请求前端设置携带cookie,则不能设置为*，需要为域名白名单
     res.header('Access-Control-Allow-Origin', whiteOrigins.has(reqOrigin) ? reqOrigin:'null') //http://localhost:63342

@@ -3,28 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <meta name="viewport" content="width=device-wdith,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 </head>
 <style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
     #box ul{
         /*display: block;*/
-        /*width: 100%;*/
+        width: 100%;
         /*overflow: hidden;*/
         display: flex;
-        flex-flow: column wrap;
+        flex-flow: row wrap;
         height: 800px;
+    }
+    .header{
+        width: 100%;
+        height: 1rem;
+        background-color: #f0f0f0;
     }
     #box li{
         box-sizing: border-box;
         list-style: none;
-        margin: 10px 50px;
-        width: 200px;
+        padding: .5rem 0;
+        width: 5rem;
         float: left;
         /*display: inline-block;*/
         border: 1px solid;
     }
+    input {
+        font-size: .32rem;
+    }
+    .onePx{
+        width: 100%;
+        background-color: red;
+        height: 1px;
+    }
+    @media (device-pixel-ratio: 2) {
+
+    }
+    /*!** iPad **!*/
+    /*@media only screen and (min-width: 767px) {*/
+    /*    #box li {*/
+    /*        padding: .5rem 0;*/
+    /*        width: 3rem;*/
+    /*    }*/
+    /*}*/
+    /*!** iPhone **!*/
+    /*@media only screen and (min-width: 320px) and (max-width: 767px) {*/
+    /*    #box li {*/
+    /*        padding: .5rem 0;*/
+    /*        width: 5rem;*/
+    /*    }*/
+    /*}*/
+
 </style>
+<script type="text/javascript">
+// <!--rem布局，隐藏掉的是不考虑dpr,放开的会根据dpr进行缩放-->
+    var maxWidth = 550;//对于px的
+    console.log(navigator.userAgent)
+    var isMobile = /Android|webOS|iPhone|iPod|ipad|iPad|Nokia|BlackBerry/.test(navigator.userAgent);
+    var isIos = navigator.userAgent.match(/iphone|ipod|ipad/gi)
+
+    // !function (e, t) {
+    //     function n() {
+    //         t.body ? t.body.style.fontSize = 12 * o + "px" : t.addEventListener("DOMContentLoaded", n)
+    //     }
+    //
+    //     function d() {
+    //         if (isMobile) {
+    //             maxWidth = document.documentElement.clientWidth
+    //         }
+    //         i.style.fontSize = maxWidth / 10 + "px";
+    //         if (maxWidth < i.clientWidth && !isMobile) {
+    //             document.querySelector('html').style.width = maxWidth + 'px';
+    //             document.querySelector('html').classList.add('pc');
+    //         } else {
+    //             document.querySelector('html').style.width = '100%';
+    //             document.querySelector('html').classList.remove('pc');
+    //         }
+    //     }
+    //
+    //     var i = t.documentElement, o = e.devicePixelRatio || 1;
+    //     console.log(o)
+    //     if (n(), d(), e.addEventListener("resize", d), e.addEventListener("pageshow", function (e) {
+    //         e.persisted && d()
+    //     }), o >= 2) {
+    //         var a = t.createElement("body"), s = t.createElement("div");
+    //         s.style.border = ".5px solid transparent", a.appendChild(s), i.appendChild(a), 1 === s.offsetHeight && i.classList.add("hairlines"), i.removeChild(a)
+    //     }
+    // }(window, document);
+
+    !(function (doc, win) {
+        //根据缩放比例设置body字体大小，即网页默认字体大小
+        function n() {
+            doc.body ? doc.body.style.fontSize = 12 * dpr + "px" : win.addEventListener("DOMContentLoaded", n)
+        }
+
+        function d() {
+            if(isMobile) {
+                maxWidth = docEle.clientWidth;
+            }
+            //如果需要设置最大宽度
+            if (maxWidth / dpr > 640) {
+
+                // maxWidth = 640 * dpr;
+            }
+            console.log(maxWidth, dpr)
+            // docEle.style.fontSize = 20 * (maxWidth / 750) + 'px';
+            docEle.style.fontSize = maxWidth/10 + 'px';
+            //限制pc最小宽度
+            if (maxWidth < docEle.clientWidth && !isMobile) {
+                document.querySelector('html').style.width = maxWidth + 'px';
+                document.querySelector('html').classList.add('pc');
+            } else {
+                document.querySelector('html').style.width = '100%';
+                document.querySelector('html').classList.remove('pc');
+            }
+
+        }
+
+        var docEle = doc.documentElement,
+            dpr=parseInt(Math.min(win.devicePixelRatio, 3));
+            scale = 1 / dpr,
+            resizeEvent = 'orientationchange' in window ? 'orientationchange' : 'resize';
+            docEle.dataset.dpr = dpr;
+
+        // var metaEle = doc.createElement('meta');
+        var metaEle = doc.querySelector("[name='viewport']")
+        metaEle.name = 'viewport';
+        metaEle.content = 'initial-scale=' + scale + ',maximum-scale=' + scale;
+        // docEle.firstElementChild.appendChild(metaEle);
+
+        n();
+        if (!doc.addEventListener) return;
+        if(n(), d(), win.addEventListener(resizeEvent, d, false),win.addEventListener('pageshow', function(e){
+            e.persisted && d();
+        }), dpr >= 2) {
+            var a = doc.createElement("body"), s = doc.createElement("div");
+            s.style.border = ".5px solid transparent", a.appendChild(s), docEle.appendChild(a), 1 === s.offsetHeight && docEle.classList.add("hairlines"), docEle.removeChild(a)
+        }
+
+    })(document, window);
+</script>
 <body>
-    <input type="text" placeholder="你好" id="test" style="width:100%;height: 30px;">
+    <div class="header">
+        <input type="text" placeholder="你好" id="test" style="width:100%;height: 100%;">
+    </div>
+    <div class="onePx"></div>
     <div id="box" style="width: 100%; height: 2000px; background-color: #ddd;">
         <ul>
             <li style="height: 200px;">1</li>

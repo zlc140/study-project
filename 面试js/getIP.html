@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-wdith,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    #box ul{
+        /*display: block;*/
+        width: 100%;
+        /*overflow: hidden;*/
+        display: flex;
+        flex-flow: row wrap;
+        height: 800px;
+    }
+    .header{
+        width: 100%;
+        height: 1rem;
+        background-color: #f0f0f0;
+    }
+
+
+</style>
+<body>
+<p>hello world</p>
+<script>
+
+    /* 在onload中执行wirte事件会覆盖之前的内容
+    * 原因：window.onload事件是在文档内容完全加载完毕再去执行事件处理函数，当然文档流已经关闭了，这个时候执
+    *      行doucment.writ()函数会自动调用document.open()函数创建一个新的文档流，并写入新的内容，再通过
+    *      浏览器展现，这样就会覆盖原来的内容
+    * 为什么直接写到script中的write不会覆盖之前内容呢
+    *       应为此时write处在document.open()的文档流中，不会再新建了
+    * 可以手动关闭文档流吗？
+    *        文档流是由浏览器控制的，无权向手动关闭，函数只能关闭有document.open()创建的文档流
+    *
+    *
+    *
+    * */
+
+    // document.write('123') //直接这样write是不会覆盖之前的p标签内容的
+    // ip获取
+    const oldReturnCitySN = window.returnCitySN;
+    let IPInfo = {};
+    let callBack = function(ipinfo) {
+        //此时页面图像加载完毕了已经
+        //write方法会创建一个新的文档流，
+        // let newWindow = window.open("","Document","_blank"); //这个是创建一个新窗口,通过newWindow来调用close和write
+        document.open();
+        document.write(JSON.stringify(ipinfo))
+        document.close()
+
+        // document.body.append(JSON.stringify(ipinfo))
+    }
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "//pv.sohu.com/cityjson?ie=utf-8";
+    document.getElementsByTagName('head')[0].appendChild(script);
+    script.onload = function () {
+        // console.log(returnCitySN)
+        Object.keys(returnCitySN).forEach(key => {
+            IPInfo[key] = returnCitySN[key];
+        });
+        IPInfo.ip || (IPInfo.ip=IPInfo.cip);
+        // window.returnCitySN = oldReturnCitySN;
+        callBack(IPInfo)
+    };
+
+</script>
+
+<script>
+    //一个有意思的运算优先级的问题
+    var a = { n : 1 };
+    var b = a;
+    a.x = a = { n : 2 };
+
+    console.log(a)  //{n:2}
+    console.log(a.x) //{undefined}
+    console.log(b) //{n:1,x:{n:2}}
+
+    //这里的运算顺序是：
+    // 1。a的值指向一个 {n:1}的内存地址A
+    // 2. b也指向A
+    // 3. .x权级会高于=；所以这是会给A地址的对象添加x属性并赋值undefing
+    // 4. =运算符会从右往运算，先给a赋值{n:2}指向内存地址B,此时a = {n: 2}
+    // 5. a.x此时不是真的a,而是指向A地址的数据，会给它赋值x属性
+    // 6. 所以最后a指向B,b指向A,而b下的x也指向B
+</script>
+</body>
+</html>

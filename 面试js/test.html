@@ -35,6 +35,17 @@
     input {
         font-size: .32rem;
     }
+    .parent-box{
+        width: 5rem;
+        height: 3rem;
+        background-color: #9d9d9d;
+    }
+    .child-box{
+        width: 5rem;
+        height: 1rem;
+        font-size: .35rem;
+        background-color: #fff;
+    }
     .onePx{
         width: 100%;
         background-color: red;
@@ -150,6 +161,12 @@
 <body>
     <div class="header">
         <input type="text" placeholder="你好" id="test" style="width:100%;height: 100%;">
+    </div>
+    <div>
+        <div class="parent-box">
+            <button class="btn" id="btn">冒泡事件</button>
+            <div class="child-box">事件委托</div>
+        </div>
     </div>
     <div class="onePx"></div>
     <div id="box" style="width: 100%; height: 2000px; background-color: #ddd;">
@@ -268,6 +285,33 @@
         // console.log(sortArr2(arr, null))
         // console.timeEnd('end')
         // console.log(a,b)
+    </script>
+    <script>
+        /*
+        * 1. 父级的点击事件的第三个参数为true(是在捕获阶段执行，此时先执行父点击回调，再子点击的回调)
+        *    为false(是在冒泡阶段执行，此时先执行子点击回调，再父点击的回调)
+        * 2. 事件冒泡是往上传递知道document,事件捕获是从document往下传递，直到被点击对象
+        * 3. 事件委托就是通过监听父元素来给不同的子元素添加事件，减少事件绑定次数
+        * 4. 阻止冒泡事件 event.stopPropagation();（在回调函数中添加）
+        * */
+        //冒泡和捕获
+        var btn = document.querySelector('#btn');
+        var parentBox = document.querySelector('.parent-box');
+
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            console.log('我是btn 的true点击事件')
+        }, true)
+        btn.addEventListener('click', function() {
+            console.log('我是btn 的false点击事件')
+        }, false)
+        parentBox.addEventListener('click', function() {
+            console.log('我是box 的捕获点击事件')
+        }, true)
+        parentBox.addEventListener('click', function(e) {
+            console.log( e.target.className)
+            console.log('我是box 的冒泡点击事件')
+        }, false)
     </script>
 </body>
 </html>
